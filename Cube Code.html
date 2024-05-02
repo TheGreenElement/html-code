@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Style for the grid container */
+    #grid-container {
+      display: grid;
+      grid-template-columns: repeat(100, 1vw);
+      grid-template-rows: repeat(100, 1vw);
+      gap: 1px;
+    }
+
+    /* Style for the grid cells */
+    .grid-cell {
+      width: 1vw;
+      height: 1vw;
+      border: 1px solid #000;
+    }
+
+    /* Style for the thicker cells */
+    .thicker-cell {
+      border-width: 2px;
+    }
+  </style>
+  <script>
+    // Function to create the grid
+    function createGrid() {
+      // Get the grid container
+      const gridContainer = document.getElementById('grid-container');
+
+      // Generate 10000 grid cells (100x100)
+      for (let i = 0; i < 10000; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'grid-cell';
+        gridContainer.appendChild(cell);
+      }
+
+      // Array to store the colors of all blobs
+      const allBlobColors = [];
+
+      // Flag to indicate whether blob spawning is paused
+      let isPaused = false;
+
+      // Automatically create a new blob every 1/4 of a second, unless paused
+      const intervalId = setInterval(() => {
+        if (!isPaused) {
+          randomizeGrid(allBlobColors);
+        }
+      }, 0.1);
+
+      // Event listener for key presses
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 's') {
+          isPaused = !isPaused; // Toggle the pause flag
+        } else if (event.key === 'm') {
+          removeColorPrompt(allBlobColors);
+        } else if (event.key === 'n') {
+          spawnBlobsPrompt(allBlobColors);
+        }
+      });
+
+      // Store interval ID in the randomizeGrid function
+      randomizeGrid.intervalId = intervalId;
+    }
+
+    // Function to randomize the grid with various size variations of randomly shaped closed-off blobs
+    function randomizeGrid(allBlobColors) {
+      // Array of specified Rubik's Cube colors
+      const colors = ['red', 'orange', 'yellow', 'blue', 'green'];
+
+      // Get all grid cells
+      const cells = document.querySelectorAll('.grid-cell');
+
+      // Remove thicker-cell class from all cells
+      cells.forEach(cell => {
+        cell.classList.remove('thicker-cell');
+      });
+
+      // Choose a random size variation of the blob
+      const blobVariation = Math.floor(Math.random() * 7) + 2; // Random number between 2 and 8
+
+      // Determine the color for this click
+      const colorIndex = randomizeGrid.clickCount % colors.length;
+      const color = colors[colorIndex];
+
+      // Randomly choose a starting point for the blob
+      const blobStartRow = Math.floor(Math.random() * 100);
+      const blobStartCol = Math.floor(Math.random() * 100);
+
+      // Assign the specified color to the cells within the blob
+      for (let i = 0; i < 100; i++) {
+        for (let j = 0; j < 100; j++) {
+          const cellIndex = i * 100 + j;
+          const cell = cells[cellIndex];
+
+          const distance = Math.sqrt((i - blobStartRow) ** 2 + (j - blobStartCol) ** 2);
+          if (distance < blobVariation) {
+            cell.style.backgroundColor = color;
+            cell.classList.add('thicker-cell');
+          }
+        }
+      }
+
+      // Store the color of the current blob in the array
+      allBlobColors.push(color);
+
+      // Increment the click count
+      randomizeGrid.clickCount++;
+    }
+
+    // Function to prompt user for color removal or replacement
+    function removeColorPrompt(allBlobColors) {
+      const userInput = prompt("Enter a command (e.g., 'remove red' or 'replace red with green'):");
+      if (userInput) {
+        processUserInput(allBlobColors, userInput);
+      }
+    }
+
+    // Function to prompt user for the number of blobs to spawn
+    function spawnBlobsPrompt(allBlobColors) {
+      const numberOfBlobs = prompt("How Many Blobs Would You Like To Spawn In?");
+      if (numberOfBlobs) {
+        spawnBlobs(allBlobColors, Number(numberOfBlobs));
+      }
+    }
+
+    // Function to process user input (remove or replace colors)
+    function processUserInput(allBlobColors, userInput) {
+      const [action, color1, keyword, color2] = userInput.split(' ');
+
+      if (action === 'remove') {
+        removeAllOccurrences(allBlobColors, color1);
+      } else if (action === 'replace' && keyword === 'with' && color2) {
+        replaceColor(allBlobColors, color1, color2);
+      } else {
+        alert('Invalid command. Please use "remove" or "replace color1 with color2".');
+      }
+    }
+
+    // Function to remove all occurrences of a color and replace with white
+    function removeAllOccurrences(allBlobColors, colorToRemove) {
+      const cells = document.querySelectorAll('.grid-cell');
+      cells.forEach(cell => {
+        const cellColor = cell.style.backgroundColor;
+        if (allBlobColors.includes(cellColor) && cellColor === colorToRemove) {
+          cell.style.backgroundColor = 'white';
+        }
+      });
+    }
+
+    // Function to replace all occurrences of one color with another
+    function replaceColor(allBlobColors, color1, color2) {
+      const cells = document.querySelectorAll('.grid-cell');
+      cells.forEach(cell => {
+        const cellColor = cell.style.backgroundColor;
+        if (allBlobColors.includes(cellColor) && cellColor === color1) {
+          cell.style.backgroundColor = color2;
+        }
+      });
+    }
+
+    // Function to spawn a specified number of blobs
+    function spawnBlobs(allBlobColors, numberOfBlobs) {
+      for (let i = 0; i < numberOfBlobs; i++) {
+        randomizeGrid(allBlobColors);
+      }
+    }
+
+    // Initialize click count
+    randomizeGrid.clickCount = 0;
+  </script>
+</head>
+<body onload="createGrid()">
+  <!-- Grid Container -->
+  <div id="grid-container"></div>
+</body>
+</html>
