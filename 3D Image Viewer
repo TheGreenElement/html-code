@@ -17,12 +17,14 @@
 <body>
 <div id="container"></div>
 <div id="buttonContainer">
-    <input type="file" id="fileInput" accept=".obj,.stl,.3mf" style="display:none;">
-    <button onclick="document.getElementById('fileInput').click();">Add 3D Image</button>
+    <input type="file" id="fileInput" accept=".zip" style="display:none;">
+    <button onclick="document.getElementById('fileInput').click();">Add 3D Image (ZIP)</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://threejs.org/examples/js/loaders/3MFLoader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip-utils.min.js"></script>
 
 <script>
     var container = document.getElementById('container');
@@ -38,17 +40,24 @@
         var file = event.target.files[0];
         var reader = new FileReader();
         reader.onload = function(event) {
-            var dataURL = event.target.result;
-            if (file.name.endsWith('.3mf')) {
-                loader.load(dataURL, function (object) {
-                    scene.add(object);
+            JSZip.loadAsync(event.target.result).then(function(zip) {
+                // Assuming the zip contains only 3D files
+                var promises = [];
+                zip.forEach(function (relativePath, zipEntry) {
+                    if (zipEntry.name.endsWith('.3mf')) {
+                        promises.push(zip.file(zipEntry.name).async('arraybuffer'));
+                    }
                 });
-            } else {
-                // Load other file formats (obj, stl) using appropriate loaders
-                console.log('File format not supported');
-            }
+                Promise.all(promises).then(function(contents) {
+                    contents.forEach(function(content) {
+                        loader.parse(content, function (object) {
+                            scene.add(object);
+                        });
+                    });
+                });
+            });
         };
-        reader.readAsDataURL(file);
+        reader.readAsArrayBuffer(file);
     });
 
     var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -58,6 +67,18 @@
     scene.add(directionalLight);
 
     camera.position.z = 5;
+
+    // Add zoom controls
+    var zoomSpeed = 0.1;
+    var minZoom = 1;
+    var maxZoom = 5;
+
+    function zoom(event) {
+        camera.position.z -= event.deltaY * zoomSpeed;
+        camera.position.z = Math.max(minZoom, Math.min(maxZoom, camera.position.z));
+    }
+
+    window.addEventListener('wheel', zoom);
 
     function animate() {
         requestAnimationFrame(animate);
