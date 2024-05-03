@@ -43,11 +43,13 @@
     let lastY = 0;
     let brushSize = 5;
     let color = '#000000';
+    let isErasing = false;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     function startDrawing(e) {
+        if (isErasing) return;
         isDrawing = true;
         [lastX, lastY] = [e.offsetX, e.offsetY];
     }
@@ -78,7 +80,35 @@
     }
 
     function enableEraser() {
-        color = '#ffffff';
+        isErasing = true;
+        canvas.addEventListener('mousemove', erase);
+        canvas.addEventListener('mousedown', erase);
+        canvas.addEventListener('mouseup', stopErasing);
+    }
+
+    function erase(e) {
+        if (!isErasing) return;
+        let mouseX = e.offsetX;
+        let mouseY = e.offsetY;
+        let radius = brushSize / 2;
+
+        context.save();
+        context.globalCompositeOperation = 'destination-out';
+        context.beginPath();
+        context.arc(mouseX, mouseY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = 'rgba(255,255,255,0.5)';
+        context.fill();
+        context.lineWidth = 2;
+        context.strokeStyle = 'rgba(150,150,150,0.8)';
+        context.stroke();
+        context.restore();
+    }
+
+    function stopErasing() {
+        isErasing = false;
+        canvas.removeEventListener('mousemove', erase);
+        canvas.removeEventListener('mousedown', erase);
+        canvas.removeEventListener('mouseup', stopErasing);
     }
 
     canvas.addEventListener('mousedown', startDrawing);
@@ -97,6 +127,14 @@
     }
 
     window.addEventListener('resize', handleCanvasResize);
+
+    // Function to stop drawing when Escape key is pressed
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") {
+            stopDrawing();
+            stopErasing();
+        }
+    });
 </script>
 
 </body>
