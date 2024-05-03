@@ -130,8 +130,8 @@
 
     // Function to stop drawing when Escape key is pressed
     document.addEventListener('keydown', function(event) {
-        if (event.key === "Escape") {
-            isDrawing = false;
+        if (event.key === "Escape" || event.code === "Escape") {
+            stopDrawing();
             stopErasing();
         }
     });
