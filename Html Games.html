@@ -17,6 +17,21 @@
         bottom: 10px;
         left: 10px;
     }
+    .board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
+        gap: 2px;
+        margin: 0 auto;
+    }
+    .cell {
+        border: 1px solid black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
@@ -61,6 +76,7 @@
         <p>Guess the word:</p>
         <input type="text" id="wordGuessInput">
         <button onclick="checkWordGuess()">Submit Guess</button>
+        <p id="wordGuessHint"></p>
         <p id="wordGuessMessage"></p>
     </div>
 
@@ -156,15 +172,43 @@
     }
 
     // Word Guessing Game
-    const words = ['apple', 'banana', 'cherry', 'orange', 'grape'];
-    const randomWord = words[Math.floor(Math.random() * words.length)];
+    const words = [
+        { word: 'apple', hint: 'A common fruit.' },
+        { word: 'banana', hint: 'A long yellow fruit.' },
+        { word: 'cherry', hint: 'A small red fruit.' },
+        { word: 'orange', hint: 'A round orange fruit.' },
+        { word: 'grape', hint: 'A small fruit typically growing in bunches.' },
+        { word: 'strawberry', hint: 'A sweet, red fruit with small seeds on its surface.' },
+        { word: 'watermelon', hint: 'A large fruit with green skin and pink flesh.' },
+        { word: 'pineapple', hint: 'A tropical fruit with a spiky exterior and sweet interior.' },
+        { word: 'kiwi', hint: 'A small, brown fruit with green flesh and black seeds.' },
+        { word: 'mango', hint: 'A tropical fruit with yellow skin and orange flesh.' },
+        { word: 'pear', hint: 'A fruit shaped like a teardrop, usually green or yellow.' },
+        { word: 'peach', hint: 'A soft fruit with fuzzy skin and a large pit.' },
+        { word: 'plum', hint: 'A small, round fruit with smooth skin and a pit inside.' },
+        { word: 'apricot', hint: 'A small, orange fruit similar to a peach.' },
+        { word: 'blueberry', hint: 'A small, round fruit with dark blue skin.' }
+    ];
+    let currentWordIndex;
+    let currentWord;
+    let currentHint;
+
+    function resetWordGuessGame() {
+        currentWordIndex = Math.floor(Math.random() * words.length);
+        currentWord = words[currentWordIndex].word;
+        currentHint = words[currentWordIndex].hint;
+        document.getElementById('wordGuessHint').textContent = `Hint: ${currentHint}`;
+        document.getElementById('wordGuessInput').value = '';
+        document.getElementById('wordGuessMessage').textContent = '';
+    }
 
     function checkWordGuess() {
         const userGuess = document.getElementById('wordGuessInput').value.toLowerCase();
         const messageElement = document.getElementById('wordGuessMessage');
         
-        if (userGuess === randomWord) {
+        if (userGuess === currentWord) {
             messageElement.textContent = 'Congratulations! You guessed the correct word!';
+            setTimeout(resetWordGuessGame, 2000);
         } else {
             messageElement.textContent = 'Incorrect guess. Try again.';
         }
@@ -190,7 +234,7 @@
     }
 
     function getRandomWord() {
-        const words = ['apple', 'banana', 'cherry', 'orange', 'grape'];
+        const words = ['apple', 'banana', 'cherry', 'orange', 'grape', 'strawberry', 'watermelon', 'pineapple', 'kiwi', 'mango', 'pear', 'peach', 'plum', 'apricot', 'blueberry'];
         return words[Math.floor(Math.random() * words.length)];
     }
 
@@ -282,7 +326,7 @@
         } else if (currentGame === 'wordGuess') {
             resetWordGuessGame();
         } else if (currentGame === 'hangman') {
-            resetHangmanGame();
+            startHangmanGame();
         }
     }
 
@@ -291,7 +335,7 @@
         const guessMessage = document.getElementById('guessMessage');
         guessInput.value = '';
         guessMessage.textContent = '';
-        const newRandomNumber = Math.floor(Math.random() * 100) + 1;
+        randomNumber = Math.floor(Math.random() * 100) + 1;
     }
 
     function resetTicTacToeGame() {
@@ -304,20 +348,8 @@
         document.querySelectorAll('.board .cell').forEach(cell => cell.innerText = '');
     }
 
-    function resetWordGuessGame() {
-        const wordGuessInput = document.getElementById('wordGuessInput');
-        const wordGuessMessage = document.getElementById('wordGuessMessage');
-        wordGuessInput.value = '';
-        wordGuessMessage.textContent = '';
-        randomWord = words[Math.floor(Math.random() * words.length)];
-    }
-
-    function resetHangmanGame() {
-        startHangmanGame();
-    }
-
     // Initial game setup
-    startHangmanGame();
+    resetWordGuessGame();
 </script>
 </body>
 </html>
