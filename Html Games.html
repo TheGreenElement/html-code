@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Games</title>
+<style>
+    body {
+        text-align: center;
+        margin: 20px;
+    }
+    #gameContainer {
+        display: none;
+    }
+    #restartButton {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+    }
+</style>
+</head>
+<body>
+<h1>Choose a Game</h1>
+<select id="gameSelector" onchange="toggleGame()">
+    <option value="none">Select a Game</option>
+    <option value="guess">Guess the Number</option>
+    <option value="ticTacToe">Tic-Tac-Toe</option>
+    <option value="wordGuess">Word Guessing</option>
+    <option value="hangman">Hangman</option>
+</select>
+
+<div id="gameContainer">
+    <!-- Guess the Number Game -->
+    <div id="guessGame" style="display: none;">
+        <h2>Guess the Number</h2>
+        <p>Guess a number between 1 and 100:</p>
+        <input type="number" id="guess">
+        <button onclick="checkGuess()">Submit Guess</button>
+        <p id="guessMessage"></p>
+    </div>
+
+    <!-- Tic-Tac-Toe Game -->
+    <div id="ticTacToeGame" style="display: none;">
+        <h2>Tic-Tac-Toe</h2>
+        <div class="board">
+            <div class="cell" onclick="makeMove(0, 0)"></div>
+            <div class="cell" onclick="makeMove(0, 1)"></div>
+            <div class="cell" onclick="makeMove(0, 2)"></div>
+            <div class="cell" onclick="makeMove(1, 0)"></div>
+            <div class="cell" onclick="makeMove(1, 1)"></div>
+            <div class="cell" onclick="makeMove(1, 2)"></div>
+            <div class="cell" onclick="makeMove(2, 0)"></div>
+            <div class="cell" onclick="makeMove(2, 1)"></div>
+            <div class="cell" onclick="makeMove(2, 2)"></div>
+        </div>
+    </div>
+
+    <!-- Word Guessing Game -->
+    <div id="wordGuessGame" style="display: none;">
+        <h2>Word Guessing Game</h2>
+        <p>Guess the word:</p>
+        <input type="text" id="wordGuessInput">
+        <button onclick="checkWordGuess()">Submit Guess</button>
+        <p id="wordGuessMessage"></p>
+    </div>
+
+    <!-- Hangman Game -->
+    <div id="hangmanGame" style="display: none;">
+        <h2>Hangman Game</h2>
+        <p>Guess the word before the man is hanged:</p>
+        <div id="hangmanCanvas"></div>
+        <p id="hangmanWord"></p>
+        <input type="text" id="hangmanLetterInput">
+        <button onclick="checkHangmanLetter()">Guess Letter</button>
+        <p id="hangmanMessage"></p>
+    </div>
+</div>
+
+<button id="restartButton" onclick="restart()">Restart</button>
+
+<script>
+    let currentGame = '';
+
+    function toggleGame() {
+        const selectedGame = document.getElementById('gameSelector').value;
+        if (selectedGame === 'none') {
+            document.getElementById('gameContainer').style.display = 'none';
+        } else {
+            document.getElementById('gameContainer').style.display = 'block';
+            document.getElementById('guessGame').style.display = selectedGame === 'guess' ? 'block' : 'none';
+            document.getElementById('ticTacToeGame').style.display = selectedGame === 'ticTacToe' ? 'block' : 'none';
+            document.getElementById('wordGuessGame').style.display = selectedGame === 'wordGuess' ? 'block' : 'none';
+            document.getElementById('hangmanGame').style.display = selectedGame === 'hangman' ? 'block' : 'none';
+            currentGame = selectedGame;
+        }
+    }
+
+    // Guess the Number Game
+    const randomNumber = Math.floor(Math.random() * 100) + 1;
+
+    function checkGuess() {
+        const userGuess = parseInt(document.getElementById('guess').value);
+        const messageElement = document.getElementById('guessMessage');
+        
+        if (userGuess === randomNumber) {
+            messageElement.textContent = 'Congratulations! You guessed the correct number!';
+        } else if (userGuess < randomNumber) {
+            messageElement.textContent = 'Too low! Try again.';
+        } else {
+            messageElement.textContent = 'Too high! Try again.';
+        }
+    }
+
+    // Tic-Tac-Toe Game
+    let currentPlayer = 'X';
+    let board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+    ];
+
+    function makeMove(row, col) {
+        if (currentGame !== 'ticTacToe') return;
+
+        if (board[row][col] === '') {
+            board[row][col] = currentPlayer;
+            document.querySelector(`.board .cell:nth-child(${row * 3 + col + 1})`).innerText = currentPlayer;
+            if (checkWinner()) {
+                alert(`${currentPlayer} wins!`);
+                resetGame();
+            } else if (board.every(row => row.every(cell => cell !== ''))) {
+                alert("It's a draw!");
+                resetGame();
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            }
+        }
+    }
+
+    function checkWinner() {
+        for (let i = 0; i < 3; i++) {
+            if (board[i][0] !== '' && board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
+                return true;
+            }
+            if (board[0][i] !== '' && board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
+                return true;
+            }
+        }
+        if (board[0][0] !== '' && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
+            return true;
+        }
+        if (board[0][2] !== '' && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
+            return true;
+        }
+        return false;
+    }
+
+    // Word Guessing Game
+    const words = ['apple', 'banana', 'cherry', 'orange', 'grape'];
+    const randomWord = words[Math.floor(Math.random() * words.length)];
+
+    function checkWordGuess() {
+        const userGuess = document.getElementById('wordGuessInput').value.toLowerCase();
+        const messageElement = document.getElementById('wordGuessMessage');
+        
+        if (userGuess === randomWord) {
+            messageElement.textContent = 'Congratulations! You guessed the correct word!';
+        } else {
+            messageElement.textContent = 'Incorrect guess. Try again.';
+        }
+    }
+
+    // Hangman Game
+    const hangmanCanvas = document.getElementById('hangmanCanvas');
+    const hangmanWordElement = document.getElementById('hangmanWord');
+    const hangmanLetterInput = document.getElementById('hangmanLetterInput');
+    const hangmanMessageElement = document.getElementById('hangmanMessage');
+
+    let hangmanWord = '';
+    let hangmanGuesses = [];
+    let hangmanWrongGuesses = 0;
+
+    function startHangmanGame() {
+        hangmanWord = getRandomWord();
+        hangmanGuesses = new Array(hangmanWord.length).fill('_');
+        hangmanWrongGuesses = 0;
+        drawHangman();
+        updateHangmanWord();
+        hangmanMessageElement.textContent = '';
+    }
+
+    function getRandomWord() {
+        const words = ['apple', 'banana', 'cherry', 'orange', 'grape'];
+        return words[Math.floor(Math.random() * words.length)];
+    }
+
+    function drawHangman() {
+        const canvasWidth = 150;
+        const canvasHeight = 200;
+        hangmanCanvas.innerHTML = `<svg width="${canvasWidth}" height="${canvasHeight}" viewBox="0 0 ${canvasWidth} ${canvasHeight}" xmlns="http://www.w3.org/2000/svg">
+            <!-- Draw hangman parts based on wrong guesses -->
+            <line x1="20" y1="180" x2="130" y2="180" stroke="black" stroke-width="2" />
+            <line x1="50" y1="180" x2="50" y2="20" stroke="black" stroke-width="2" />
+            <line x1="50" y1="20" x2="100" y2="20" stroke="black" stroke-width="2" />
+            <line x1="100" y1="20" x2="100" y2="50" stroke="black" stroke-width="2" />
+            <circle cx="100" cy="70" r="20" stroke="black" stroke-width="2" fill="none" />
+            <line x1="100" y1="90" x2="100" y2="130" stroke="black" stroke-width="2" />
+            <line x1="100" y1="95" x2="80" y2="105" stroke="black" stroke-width="2" />
+            <line x1="100" y1="95" x2="120" y2="105" stroke="black" stroke-width="2" />
+            <line x1="100" y1="130" x2="80" y2="160" stroke="black" stroke-width="2" />
+            <line x1="100" y1="130" x2="120" y2="160" stroke="black" stroke-width="2" />
+        </svg>`;
+        for (let i = 0; i < hangmanWrongGuesses; i++) {
+            switch (i) {
+                case 0:
+                    hangmanCanvas.innerHTML += `<circle cx="100" cy="100" r="10" fill="black" />`;
+                    break;
+                case 1:
+                    hangmanCanvas.innerHTML += `<line x1="100" y1="110" x2="100" y2="130" stroke="black" stroke-width="2" />`;
+                    break;
+                case 2:
+                    hangmanCanvas.innerHTML += `<line x1="100" y1="130" x2="90" y2="140" stroke="black" stroke-width="2" />`;
+                    break;
+                case 3:
+                    hangmanCanvas.innerHTML += `<line x1="100" y1="130" x2="110" y2="140" stroke="black" stroke-width="2" />`;
+                    break;
+                case 4:
+                    hangmanCanvas.innerHTML += `<line x1="100" y1="120" x2="90" y2="110" stroke="black" stroke-width="2" />`;
+                    break;
+                case 5:
+                    hangmanCanvas.innerHTML += `<line x1="100" y1="120" x2="110" y2="110" stroke="black" stroke-width="2" />`;
+                    break;
+            }
+        }
+    }
+
+    function updateHangmanWord() {
+        hangmanWordElement.textContent = hangmanGuesses.join(' ');
+    }
+
+    function checkHangmanLetter() {
+        const letter = hangmanLetterInput.value.toLowerCase();
+        if (!letter.match(/^[a-z]$/)) {
+            hangmanMessageElement.textContent = 'Please enter a single letter from A to Z.';
+            return;
+        }
+        if (hangmanGuesses.includes(letter)) {
+            hangmanMessageElement.textContent = 'You already guessed that letter.';
+            return;
+        }
+        const indices = [];
+        for (let i = 0; i < hangmanWord.length; i++) {
+            if (hangmanWord[i] === letter) {
+                indices.push(i);
+            }
+        }
+        if (indices.length === 0) {
+            hangmanWrongGuesses++;
+            drawHangman();
+            if (hangmanWrongGuesses === 6) {
+                hangmanMessageElement.textContent = `Sorry, you're out of guesses! The word was "${hangmanWord}".`;
+                setTimeout(startHangmanGame, 2000);
+            }
+        } else {
+            for (const index of indices) {
+                hangmanGuesses[index] = letter;
+            }
+            updateHangmanWord();
+            if (!hangmanGuesses.includes('_')) {
+                hangmanMessageElement.textContent = 'Congratulations! You guessed the word!';
+                setTimeout(startHangmanGame, 2000);
+            }
+        }
+        hangmanLetterInput.value = '';
+    }
+
+    function restart() {
+        if (currentGame === 'guess') {
+            resetGuessGame();
+        } else if (currentGame === 'ticTacToe') {
+            resetTicTacToeGame();
+        } else if (currentGame === 'wordGuess') {
+            resetWordGuessGame();
+        } else if (currentGame === 'hangman') {
+            resetHangmanGame();
+        }
+    }
+
+    function resetGuessGame() {
+        const guessInput = document.getElementById('guess');
+        const guessMessage = document.getElementById('guessMessage');
+        guessInput.value = '';
+        guessMessage.textContent = '';
+        const newRandomNumber = Math.floor(Math.random() * 100) + 1;
+    }
+
+    function resetTicTacToeGame() {
+        currentPlayer = 'X';
+        board = [
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', '']
+        ];
+        document.querySelectorAll('.board .cell').forEach(cell => cell.innerText = '');
+    }
+
+    function resetWordGuessGame() {
+        const wordGuessInput = document.getElementById('wordGuessInput');
+        const wordGuessMessage = document.getElementById('wordGuessMessage');
+        wordGuessInput.value = '';
+        wordGuessMessage.textContent = '';
+        randomWord = words[Math.floor(Math.random() * words.length)];
+    }
+
+    function resetHangmanGame() {
+        startHangmanGame();
+    }
+
+    // Initial game setup
+    startHangmanGame();
+</script>
+</body>
+</html>
