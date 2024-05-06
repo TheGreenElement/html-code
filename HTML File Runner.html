@@ -31,6 +31,9 @@
             cursor: pointer;
             position: relative;
         }
+        .fileIcon.active {
+            font-weight: bold;
+        }
         .fileIcon:hover .contextMenu {
             display: block;
         }
@@ -115,7 +118,15 @@
             fileIcon.onclick = function() {
                 var iframe = document.getElementById('fileViewer');
                 iframe.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(fileContent);
-                iframe.classList.remove('hidden');
+                
+                // Remove active class from all icons
+                var icons = document.querySelectorAll('.fileIcon');
+                icons.forEach(function(icon) {
+                    icon.classList.remove('active');
+                });
+
+                // Add active class to the clicked icon
+                fileIcon.classList.add('active');
             };
 
             // Right-click functionality
@@ -139,6 +150,7 @@
                     if (confirm('Are you sure you want to delete the application?')) {
                         var iframe = document.getElementById('fileViewer');
                         iframe.classList.add('hidden');
+                        fileIcon.classList.remove('active');
                     }
                 });
 
