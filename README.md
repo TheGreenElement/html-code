@@ -23,6 +23,7 @@ The compilation includes HTML code snippets for the following functionalities:
 - An art project that creates random "blobs" across the screen with varying sizes.
 - Loads of games baked into one HTML file. (Kinda Bad)
 - MegaBlitz, a malicious code file that when ran and accepted crashes Chromebooks.
+- And more. :)
 
 ## Usage
 
