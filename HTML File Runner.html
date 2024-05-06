@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML File Runner</title>
+    <style>
+        /* Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
+        }
+        .taskbar {
+            background-color: #f3f3f3;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .taskbar button {
+            padding: 5px 10px;
+            margin-right: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .fileIcon {
+            display: inline-block;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .mainContent {
+            margin: 20px;
+            height: calc(100vh - 2 * 20px - 2 * 10px); /* Adjust for margins and taskbar height */
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="taskbar">
+        <button id="openFileButton">Open HTML File</button>
+        <div id="fileIcons"></div>
+    </div>
+    <div class="mainContent">
+        <iframe id="fileViewer" src=""></iframe>
+    </div>
+
+    <script>
+        // JavaScript
+        document.getElementById('openFileButton').addEventListener('click', function() {
+            // Create input element to select files
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.html';
+            input.onchange = function(event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.readAsText(file, 'UTF-8');
+                    reader.onload = function(readerEvent) {
+                        var fileContent = readerEvent.target.result;
+                        displayHTMLFile(file.name.replace('.html', ''), fileContent);
+                    }
+                }
+            };
+            input.click();
+        });
+
+        function displayHTMLFile(fileName, fileContent) {
+            var fileIcon = document.createElement('div');
+            fileIcon.className = 'fileIcon';
+            fileIcon.textContent = fileName;
+            fileIcon.onclick = function() {
+                document.getElementById('fileViewer').src = 'data:text/html;charset=utf-8,' + encodeURIComponent(fileContent);
+            };
+            document.getElementById('fileIcons').appendChild(fileIcon);
+        }
+    </script>
+</body>
+</html>
