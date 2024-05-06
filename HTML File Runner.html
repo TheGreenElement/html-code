@@ -66,6 +66,9 @@
             height: 100%;
             border: 1px solid #ccc;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -132,7 +135,7 @@
                 // Option: Delete
                 document.getElementById('deleteApp').addEventListener('click', function() {
                     if (confirm('Are you sure you want to delete the application?')) {
-                        fileIcon.remove();
+                        document.getElementById('fileViewer').classList.add('hidden');
                     }
                 });
 
