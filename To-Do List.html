@@ -19,13 +19,13 @@
         background-color: #f9f9f9;
     }
     #taskInput {
-        width: calc(100% - 80px);
+        width: calc(100% - 130px);
         padding: 10px;
         margin-bottom: 10px;
         box-sizing: border-box;
     }
     #deadlineInput {
-        width: 150px;
+        width: 130px;
         padding: 10px;
         margin-bottom: 10px;
         box-sizing: border-box;
@@ -52,8 +52,11 @@
 <body>
 <div id="app">
     <h1>To-Do List</h1>
-    <input type="text" id="taskInput" placeholder="Add a new task...">
-    <input type="date" id="deadlineInput">
+    <div>
+        <input type="text" id="taskInput" placeholder="Add a new task...">
+        <input type="date" id="deadlineInput">
+        <button id="setDeadlineBtn">Set Deadline</button>
+    </div>
     <button id="addTaskBtn">Add Task</button>
     <div id="taskList"></div>
 </div>
@@ -61,6 +64,7 @@
 <script>
     const taskInput = document.getElementById('taskInput');
     const deadlineInput = document.getElementById('deadlineInput');
+    const setDeadlineBtn = document.getElementById('setDeadlineBtn');
     const addTaskBtn = document.getElementById('addTaskBtn');
     const taskList = document.getElementById('taskList');
 
@@ -73,8 +77,9 @@
             task.className = 'task';
             task.innerHTML = `
                 <span>${taskText}</span>
-                <span>${deadline}</span>
+                <span class="deadline">${deadline ? 'Deadline: ' + deadline : ''}</span>
                 <button class="completeBtn">Complete</button>
+                <button class="setDeadlineBtn">Set Deadline</button>
                 <button class="removeBtn">Remove</button>
             `;
             taskList.appendChild(task);
@@ -91,6 +96,13 @@
         task.remove();
     }
 
+    function setDeadline(task) {
+        const deadline = prompt("Enter deadline (YYYY-MM-DD):");
+        if (deadline !== null) {
+            task.querySelector('.deadline').textContent = 'Deadline: ' + deadline;
+        }
+    }
+
     addTaskBtn.addEventListener('click', addTask);
 
     taskList.addEventListener('click', function(event) {
@@ -99,6 +111,8 @@
             completeTask(target.parentNode);
         } else if (target.classList.contains('removeBtn')) {
             removeTask(target.parentNode);
+        } else if (target.classList.contains('setDeadlineBtn')) {
+            setDeadline(target.parentNode);
         }
     });
 </script>
