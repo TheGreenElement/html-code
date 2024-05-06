@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Planet Pioneers</title>
+  <style>
+    /* CSS remains the same */
+  </style>
+</head>
+<body>
+  <div id="planet"></div>
+  <div id="resources">
+    <h2>Resources</h2>
+    <p>Water: <span id="water">100</span></p>
+    <p>Minerals: <span id="minerals">100</span></p>
+    <p>Energy: <span id="energy">100</span></p>
+    <p>Population: <span id="population">0</span></p>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const planet = document.getElementById("planet");
+      const waterDisplay = document.getElementById("water");
+      const mineralsDisplay = document.getElementById("minerals");
+      const energyDisplay = document.getElementById("energy");
+      const populationDisplay = document.getElementById("population");
+      let water = 100;
+      let minerals = 100;
+      let energy = 100;
+      let population = 0;
+
+      // Create the grid of pixels
+      for (let i = 0; i < 1600; i++) {
+        const pixel = document.createElement("div");
+        pixel.classList.add("pixel");
+        planet.appendChild(pixel);
+      }
+
+      // Add click event to each pixel
+      const pixels = document.querySelectorAll(".pixel");
+      pixels.forEach(pixel => {
+        pixel.addEventListener("click", () => {
+          if (pixel.classList.contains("water")) {
+            if (water >= 10) {
+              water -= 10;
+              waterDisplay.textContent = water;
+              pixel.classList.remove("water");
+            } else {
+              alert("Not enough water!");
+            }
+          } else if (pixel.classList.contains("minerals")) {
+            if (minerals >= 10) {
+              minerals -= 10;
+              mineralsDisplay.textContent = minerals;
+              pixel.classList.remove("minerals");
+            } else {
+              alert("Not enough minerals!");
+            }
+          } else if (pixel.classList.contains("energy")) {
+            if (energy >= 10) {
+              energy -= 10;
+              energyDisplay.textContent = energy;
+              pixel.classList.remove("energy");
+            } else {
+              alert("Not enough energy!");
+            }
+          } else {
+            if (energy >= 20 && minerals >= 10) {
+              energy -= 20;
+              minerals -= 10;
+              energyDisplay.textContent = energy;
+              mineralsDisplay.textContent = minerals;
+              pixel.classList.add("building");
+              population += 10;
+              populationDisplay.textContent = population;
+              if (pixel.classList.contains("house")) {
+                population += 10;
+                populationDisplay.textContent = population;
+              } else if (pixel.classList.contains("farm")) {
+                energy += 10;
+                energyDisplay.textContent = energy;
+              } else if (pixel.classList.contains("power-plant")) {
+                energy += 20;
+                energyDisplay.textContent = energy;
+              }
+            } else {
+              alert("Not enough resources to build!");
+            }
+          }
+        });
+      });
+
+      // Generate random resources on the planet
+      generateResources();
+
+      function generateResources() {
+        for (let i = 0; i < 200; i++) {
+          const randomIndex = Math.floor(Math.random() * pixels.length);
+          const randomPixel = pixels[randomIndex];
+          if (!randomPixel.classList.contains("building")) {
+            const resourceType = Math.random();
+            if (resourceType < 0.3) {
+              randomPixel.classList.add("water");
+            } else if (resourceType < 0.6) {
+              randomPixel.classList.add("minerals");
+            } else {
+              randomPixel.classList.add("energy");
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
