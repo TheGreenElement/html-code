@@ -113,7 +113,9 @@
             fileIcon.className = 'fileIcon';
             fileIcon.textContent = fileName;
             fileIcon.onclick = function() {
-                document.getElementById('fileViewer').src = 'data:text/html;charset=utf-8,' + encodeURIComponent(fileContent);
+                var iframe = document.getElementById('fileViewer');
+                iframe.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(fileContent);
+                iframe.classList.remove('hidden');
             };
 
             // Right-click functionality
@@ -135,7 +137,8 @@
                 // Option: Delete
                 document.getElementById('deleteApp').addEventListener('click', function() {
                     if (confirm('Are you sure you want to delete the application?')) {
-                        document.getElementById('fileViewer').classList.add('hidden');
+                        var iframe = document.getElementById('fileViewer');
+                        iframe.classList.add('hidden');
                     }
                 });
 
