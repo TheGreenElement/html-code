@@ -76,50 +76,85 @@
     const taskList = document.getElementById('taskList');
     const completedTasks = document.getElementById('completedTasks');
 
+    // Load tasks from localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        savedTasks.forEach(savedTask => {
+            const task = createTaskElement(savedTask.text, savedTask.deadline, savedTask.completed);
+            if (savedTask.completed) {
+                completedTasks.appendChild(task);
+            } else {
+                taskList.appendChild(task);
+            }
+        });
+    });
+
+    // Save tasks to localStorage
+    function saveTasks() {
+        const tasks = [];
+        document.querySelectorAll('.task').forEach(task => {
+            const text = task.querySelector('span').textContent;
+            const deadline = task.querySelector('.deadline') ? task.querySelector('.deadline').textContent.split(': ')[1] : '';
+            const completed = task.classList.contains('completed');
+            tasks.push({ text, deadline, completed });
+        });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Create a new task element
+    function createTaskElement(text, deadline, completed) {
+        const task = document.createElement('div');
+        task.className = 'task';
+        task.innerHTML = `
+            <span>${text}</span>
+            ${deadline ? '<span class="deadline">Deadline: ' + deadline + '</span>' : ''}
+            <button class="completeBtn">${completed ? 'Undo' : 'Complete'}</button>
+            <button class="setDeadlineBtn">Set Deadline</button>
+            <button class="removeBtn">Remove</button>
+        `;
+        if (completed) task.classList.add('completed');
+        return task;
+    }
+
     function addTask() {
         const taskText = taskInput.value.trim();
         const deadline = deadlineInput.value;
 
         if (taskText !== '') {
-            const task = document.createElement('div');
-            task.className = 'task';
-            task.innerHTML = `
-                <span>${taskText}</span>
-                <span class="deadline">${deadline ? 'Deadline: ' + deadline : ''}</span>
-                <button class="completeBtn">Complete</button>
-                <button class="setDeadlineBtn">Set Deadline</button>
-                <button class="removeBtn">Remove</button>
-            `;
+            const task = createTaskElement(taskText, deadline, false);
             taskList.appendChild(task);
             taskInput.value = '';
             deadlineInput.value = '';
+            saveTasks();
         }
     }
 
     function completeTask(task) {
         task.classList.toggle('completed');
-        const parent = task.parentNode;
         if (task.classList.contains('completed')) {
             completedTasks.appendChild(task);
         } else {
             taskList.appendChild(task);
         }
+        saveTasks();
     }
 
     function removeTask(task) {
         task.remove();
+        saveTasks();
     }
 
     function setDeadline(task) {
-        const deadline = prompt("Enter deadline (YYYY-MM-DD):");
-        if (deadline !== null) {
-            task.querySelector('.deadline').textContent = 'Deadline: ' + deadline;
+        const newDeadline = prompt("Enter deadline (YYYY-MM-DD):");
+        if (newDeadline !== null) {
+            task.querySelector('.deadline').textContent = 'Deadline: ' + newDeadline;
+            saveTasks();
         }
     }
 
     addTaskBtn.addEventListener('click', addTask);
 
-    taskList.addEventListener('click', function(event) {
+    document.addEventListener('click', event => {
         const target = event.target;
         if (target.classList.contains('completeBtn')) {
             completeTask(target.parentNode);
