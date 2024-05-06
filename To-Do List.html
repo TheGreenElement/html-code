@@ -19,7 +19,13 @@
         background-color: #f9f9f9;
     }
     #taskInput {
-        width: 100%;
+        width: calc(100% - 80px);
+        padding: 10px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+    #deadlineInput {
+        width: 150px;
         padding: 10px;
         margin-bottom: 10px;
         box-sizing: border-box;
@@ -47,25 +53,33 @@
 <div id="app">
     <h1>To-Do List</h1>
     <input type="text" id="taskInput" placeholder="Add a new task...">
+    <input type="date" id="deadlineInput">
+    <button id="addTaskBtn">Add Task</button>
     <div id="taskList"></div>
 </div>
 
 <script>
     const taskInput = document.getElementById('taskInput');
+    const deadlineInput = document.getElementById('deadlineInput');
+    const addTaskBtn = document.getElementById('addTaskBtn');
     const taskList = document.getElementById('taskList');
 
     function addTask() {
         const taskText = taskInput.value.trim();
+        const deadline = deadlineInput.value;
+
         if (taskText !== '') {
             const task = document.createElement('div');
             task.className = 'task';
             task.innerHTML = `
                 <span>${taskText}</span>
+                <span>${deadline}</span>
                 <button class="completeBtn">Complete</button>
                 <button class="removeBtn">Remove</button>
             `;
             taskList.appendChild(task);
             taskInput.value = '';
+            deadlineInput.value = '';
         }
     }
 
@@ -77,11 +91,7 @@
         task.remove();
     }
 
-    taskInput.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            addTask();
-        }
-    });
+    addTaskBtn.addEventListener('click', addTask);
 
     taskList.addEventListener('click', function(event) {
         const target = event.target;
