@@ -5,11 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pixel Planet Pioneers</title>
   <style>
-    /* CSS remains the same */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
+      background-color: #333;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #map {
+      margin-right: 20px;
+    }
+
+    #resources {
+      color: white;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin-top: 0;
+    }
+
+    #planet {
+      width: 400px;
+      height: 400px;
+      border: 1px solid #fff;
+      background-color: #000;
+    }
+
+    .pixel {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      background-color: #000;
+      cursor: pointer;
+    }
+
+    .water {
+      background-color: blue;
+    }
+
+    .minerals {
+      background-color: brown;
+    }
+
+    .energy {
+      background-color: yellow;
+    }
+
+    .building {
+      background-color: red;
+    }
   </style>
 </head>
 <body>
-  <div id="planet"></div>
+  <div id="map">
+    <h2>Planet Map</h2>
+    <div id="planet"></div>
+  </div>
   <div id="resources">
     <h2>Resources</h2>
     <p>Water: <span id="water">100</span></p>
@@ -29,7 +85,7 @@
       let energy = 100;
       let population = 0;
 
-      // Create the grid of pixels
+      // Create the grid of pixels (planet map)
       for (let i = 0; i < 1600; i++) {
         const pixel = document.createElement("div");
         pixel.classList.add("pixel");
