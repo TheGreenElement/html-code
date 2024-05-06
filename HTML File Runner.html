@@ -29,6 +29,33 @@
             display: inline-block;
             margin-right: 10px;
             cursor: pointer;
+            position: relative;
+        }
+        .fileIcon:hover .contextMenu {
+            display: block;
+        }
+        .contextMenu {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            border-radius: 5px;
+            top: 20px;
+            left: 0;
+            z-index: 100;
+        }
+        .contextMenu ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .contextMenu ul li {
+            cursor: pointer;
+            padding: 5px;
+        }
+        .contextMenu ul li:hover {
+            background-color: #f0f0f0;
         }
         .mainContent {
             margin: 20px;
@@ -48,6 +75,13 @@
     </div>
     <div class="mainContent">
         <iframe id="fileViewer" src=""></iframe>
+    </div>
+
+    <div id="contextMenu" class="contextMenu">
+        <ul>
+            <li id="renameApp">Rename Application</li>
+            <li id="deleteApp">Delete</li>
+        </ul>
     </div>
 
     <script>
@@ -78,6 +112,36 @@
             fileIcon.onclick = function() {
                 document.getElementById('fileViewer').src = 'data:text/html;charset=utf-8,' + encodeURIComponent(fileContent);
             };
+
+            // Right-click functionality
+            fileIcon.addEventListener('contextmenu', function(e) {
+                e.preventDefault(); // Prevent default context menu
+                var contextMenu = document.getElementById('contextMenu');
+                contextMenu.style.top = e.clientY + 'px';
+                contextMenu.style.left = e.clientX + 'px';
+                contextMenu.style.display = 'block';
+
+                // Option: Rename Application
+                document.getElementById('renameApp').addEventListener('click', function() {
+                    var newName = prompt('Enter new name for the application:', fileName);
+                    if (newName !== null) {
+                        fileIcon.textContent = newName;
+                    }
+                });
+
+                // Option: Delete
+                document.getElementById('deleteApp').addEventListener('click', function() {
+                    if (confirm('Are you sure you want to delete the application?')) {
+                        fileIcon.remove();
+                    }
+                });
+
+                // Hide context menu when clicking outside
+                document.addEventListener('click', function() {
+                    contextMenu.style.display = 'none';
+                });
+            });
+
             document.getElementById('fileIcons').appendChild(fileIcon);
         }
     </script>
