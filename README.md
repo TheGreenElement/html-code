@@ -22,7 +22,7 @@ The compilation includes HTML code snippets for the following functionalities:
 - 3D Image Viewer. (That does not work)
 - An art project that creates random "blobs" across the screen with varying sizes.
 - Loads of games baked into one HTML file. (Kinda Bad)
-- MegaBLitz, a malicious code file that when ran and accepted crashes Chromebooks.
+- MegaBlitz, a malicious code file that when ran and accepted crashes Chromebooks.
 
 ## Usage
 
