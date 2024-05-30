@@ -1,6 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Loader</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    #loadButton {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #websiteContainer {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+</style>
+</head>
+<body>
+<button id="loadButton">Load Website</button>
+<div id="websiteContainer"></div>
+<script>
+    document.getElementById("loadButton").addEventListener("click", function() {
+        var websiteURL = prompt("Enter website URL (domain name only):");
+        if (websiteURL) {
+            var iframe = document.createElement("iframe");
+            iframe.src = "https://" + websiteURL;
+            iframe.style.width = "100%";
+            iframe.style.height = "calc(100vh - 50px)"; // Adjust height as needed
+            document.getElementById("websiteContainer").innerHTML = "";
+            document.getElementById("websiteContainer").appendChild(iframe);
+        }
+    });
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Viewer</title>
