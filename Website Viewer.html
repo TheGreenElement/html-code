@@ -18,14 +18,15 @@
             position: relative;
             background-color: #333;
             border-top: 1px solid #555;
+            height: calc(100vh - 40px); /* Adjusted for button height */
         }
 
         #websiteFrame {
             width: 100%;
-            height: calc(100vh - 40px); /* Adjusted for button height */
+            height: 100%;
         }
 
-        #openWebsiteBtn, #fullscreenBtn {
+        #openWebsiteBtn {
             background-color: #007bff;
             color: #fff;
             border: none;
@@ -41,8 +42,15 @@
         }
 
         #fullscreenBtn {
+            position: fixed;
             bottom: 10px;
             right: 10px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -50,8 +58,8 @@
     <button id="openWebsiteBtn">Open Website</button>
     <div id="websiteContainer">
         <iframe id="websiteFrame" src="" frameborder="0"></iframe>
-        <button id="fullscreenBtn">Fullscreen</button>
     </div>
+    <button id="fullscreenBtn">Fullscreen</button>
     <script>
         document.getElementById('openWebsiteBtn').addEventListener('click', function() {
             var website = prompt('Enter website name and domain (e.g., example.com):');
