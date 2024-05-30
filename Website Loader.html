@@ -40,7 +40,6 @@
         var websiteURL = prompt("Enter website URL (domain name only):");
         if (websiteURL) {
             var iframe = document.createElement("iframe");
-            iframe.style.z = 9999
             iframe.src = "https://" + websiteURL;
             iframe.style.width = "100%";
             iframe.style.height = "calc(100vh - 50px)"; // Adjust height as needed
@@ -75,7 +74,7 @@
         }
 
         #websiteFrame {
-            width: 100%;
+            width: 400%;
             height: 100%;
         }
 
@@ -89,7 +88,6 @@
             font-weight: bold;
             position: absolute;
             top: 10px;
-            left: 50%;
             transform: translateX(-50%);
             border-radius: 5px;
         }
