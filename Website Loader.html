@@ -13,6 +13,7 @@
         align-items: center;
         height: 100vh;
         background-color: #f0f0f0;
+        overflow: hidden;
     }
 
     #loadButton {
@@ -23,89 +24,52 @@
         padding: 10px 20px;
         font-size: 16px;
         cursor: pointer;
+        z-index: 999; /* Ensure button is above other elements */
     }
 
     #websiteContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: calc(100% - 50px); /* Adjust height to accommodate button */
+        overflow: hidden;
+    }
+
+    #websiteIframe {
         width: 100%;
         height: 100%;
-        overflow: hidden;
+        border: none;
     }
 </style>
 </head>
 <body>
 <button id="loadButton">Load Website</button>
-<div id="websiteContainer"></div>
+<div id="websiteContainer">
+    <iframe id="websiteIframe"></iframe>
+</div>
 <script>
     document.getElementById("loadButton").addEventListener("click", function() {
         var websiteURL = prompt("Enter website URL (domain name only):");
         if (websiteURL) {
-            var iframe = document.createElement("iframe");
+            var iframe = document.getElementById("websiteIframe");
             iframe.src = "https://" + websiteURL;
-            iframe.style.width = "100%";
-            iframe.style.height = "calc(100vh - 50px)"; // Adjust height as needed
-            document.getElementById("websiteContainer").innerHTML = "";
-            document.getElementById("websiteContainer").appendChild(iframe);
+            document.getElementById("websiteContainer").style.display = "block";
+            adjustIframeSize();
         }
     });
+
+    function adjustIframeSize() {
+        var iframe = document.getElementById("websiteIframe");
+        var bodyWidth = document.body.clientWidth;
+        var bodyHeight = document.body.clientHeight;
+        iframe.style.width = bodyWidth + "px";
+        iframe.style.height = bodyHeight + "px";
+    }
+
+    window.addEventListener("resize", function() {
+        adjustIframeSize();
+    });
 </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Viewer</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #1e1e1e;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
-
-        #websiteContainer {
-            position: relative;
-            background-color: #333;
-            border-top: 1px solid #555;
-            height: calc(100vh - 40px); /* Adjusted for button height */
-        }
-
-        #websiteFrame {
-            width: 400%;
-            height: 100%;
-        }
-
-        #openWebsiteBtn {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            position: absolute;
-            top: 10px;
-            transform: translateX(-50%);
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <button id="openWebsiteBtn">Open Website</button>
-    <div id="websiteContainer">
-        <iframe id="websiteFrame" src="" frameborder="0"></iframe>
-    </div>
-    <script>
-        document.getElementById('openWebsiteBtn').addEventListener('click', function() {
-            var website = prompt('Enter website name and domain (e.g., example.com):');
-            if (website) {
-                var url = 'https://www.' + website;
-                document.getElementById('websiteFrame').src = url;
-            }
-        });
-    </script>
 </body>
 </html>
