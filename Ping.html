@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serial Number Ping</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        input {
+            margin: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ping Device by Serial Number</h1>
+    <p>Enter the device's serial number and ping them:</p>
+
+    <input type="text" id="serialInput" placeholder="Enter Serial Number" />
+    <button onclick="pingDevice()">Ping Device</button>
+
+    <div id="result"></div>
+
+    <script>
+        // Example serial numbers and associated links (or could be real IP addresses)
+        const devices = {
+            "SN12345": "http://192.168.1.10",
+            "SN67890": "http://192.168.1.11",
+            // Add more devices here
+        };
+
+        function pingDevice() {
+            const serialNumber = document.getElementById("serialInput").value;
+            const resultDiv = document.getElementById("result");
+
+            if (devices[serialNumber]) {
+                // Simulating a ping action
+                const deviceLink = devices[serialNumber];
+                resultDiv.innerHTML = `Ping successful! Device found at: <a href="${deviceLink}" target="_blank">${deviceLink}</a>`;
+            } else {
+                resultDiv.innerHTML = "Serial number not found. Please check and try again.";
+            }
+        }
+    </script>
+</body>
+</html>
