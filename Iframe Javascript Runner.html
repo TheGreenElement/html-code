@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iframe Javascript Runner</title>
+    <title>Iframe with JS Runner</title>
 </head>
 <body>
     <h1>Iframe JavaScript Runner</h1>
@@ -19,9 +19,23 @@
         </html>
     "></iframe>
 
+    <button id="setWebsite">Set Website</button>
     <button id="runJs">Run JavaScript</button>
 
     <script>
+        // Function to set the website in the iframe
+        document.getElementById('setWebsite').onclick = function() {
+            const url = prompt('Enter the website URL to load:');
+            const iframe = document.getElementById('myIframe');
+            // Check if the URL starts with http or https
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                iframe.src = url;
+            } else {
+                alert('Please enter a valid URL starting with http:// or https://');
+            }
+        };
+
+        // Function to run JavaScript in the iframe
         document.getElementById('runJs').onclick = function() {
             const iframe = document.getElementById('myIframe').contentWindow;
             const code = prompt('Enter JavaScript code to run in the iframe:');
