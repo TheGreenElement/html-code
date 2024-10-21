@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iframe with JS Runner</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        iframe { border: 1px solid #ccc; }
+    </style>
 </head>
 <body>
     <h1>Iframe JavaScript Runner</h1>
@@ -14,7 +18,7 @@
             </head>
             <body>
                 <h2>This is inside the iframe</h2>
-                <div id='result'></div>
+                <div id='message'>Hello, World!</div>
             </body>
         </html>
     "></iframe>
@@ -27,6 +31,7 @@
         document.getElementById('setWebsite').onclick = function() {
             const url = prompt('Enter the website URL to load:');
             const iframe = document.getElementById('myIframe');
+
             // Check if the URL starts with http or https
             if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
                 iframe.src = url;
@@ -38,6 +43,8 @@
         // Function to run JavaScript in the iframe
         document.getElementById('runJs').onclick = function() {
             const iframe = document.getElementById('myIframe').contentWindow;
+
+            // Try to run JavaScript in the iframe
             const code = prompt('Enter JavaScript code to run in the iframe:');
             try {
                 iframe.eval(code);
