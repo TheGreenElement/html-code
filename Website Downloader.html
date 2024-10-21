@@ -39,6 +39,8 @@
     <button onclick="downloadCompleteWebsite()">Download Website</button>
 
     <script>
+        const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
+
         async function downloadCompleteWebsite() {
             const url = document.getElementById('urlInput').value;
 
@@ -48,7 +50,9 @@
             }
 
             try {
-                const response = await fetch(url, { mode: 'cors' });
+                // Use the CORS proxy to bypass restrictions
+                const proxyUrl = CORS_PROXY + url;
+                const response = await fetch(proxyUrl);
 
                 if (!response.ok) {
                     alert(`Failed to fetch the site. Status: ${response.status}`);
@@ -64,7 +68,8 @@
                 // Function to fetch and embed resources
                 async function fetchAndEmbed(resourceUrl) {
                     try {
-                        const resourceResponse = await fetch(resourceUrl);
+                        const proxyResourceUrl = CORS_PROXY + resourceUrl;
+                        const resourceResponse = await fetch(proxyResourceUrl);
                         if (resourceResponse.ok) {
                             return await resourceResponse.text();
                         } else {
@@ -78,7 +83,8 @@
                 // Function to fetch and embed images as base64
                 async function fetchImageAsBase64(imageUrl) {
                     try {
-                        const imgResponse = await fetch(imageUrl);
+                        const proxyImageUrl = CORS_PROXY + imageUrl;
+                        const imgResponse = await fetch(proxyImageUrl);
                         const imgBlob = await imgResponse.blob();
                         return new Promise((resolve, reject) => {
                             const reader = new FileReader();
