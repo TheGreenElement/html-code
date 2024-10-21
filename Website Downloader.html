@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        label, textarea, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        textarea {
+            height: 100px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Website Downloader</h1>
+    <label for="urlInput">Enter Website URL:</label>
+    <textarea id="urlInput" placeholder="Paste website URL here..."></textarea>
+    <button onclick="downloadWebsite()">Download Website</button>
+
+    <script>
+        function downloadWebsite() {
+            const url = document.getElementById('urlInput').value;
+
+            if (!url) {
+                alert("Please enter a URL.");
+                return;
+            }
+
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    const blob = new Blob([data], { type: 'text/html' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'downloaded_site.html';
+                    link.click();
+                })
+                .catch(error => {
+                    alert("Error fetching the website. Check the URL and try again.");
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
