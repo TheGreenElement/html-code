@@ -39,7 +39,7 @@
     <button onclick="downloadWebsite()">Download Website</button>
 
     <script>
-        function downloadWebsite() {
+        async function downloadWebsite() {
             const url = document.getElementById('urlInput').value;
 
             if (!url) {
@@ -47,19 +47,25 @@
                 return;
             }
 
-            fetch(url)
-                .then(response => response.text())
-                .then(data => {
-                    const blob = new Blob([data], { type: 'text/html' });
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = 'downloaded_site.html';
-                    link.click();
-                })
-                .catch(error => {
-                    alert("Error fetching the website. Check the URL and try again.");
-                    console.error('Error:', error);
-                });
+            try {
+                const response = await fetch(url, { mode: 'cors' });
+
+                if (!response.ok) {
+                    alert(`Failed to fetch the site. Status: ${response.status}`);
+                    return;
+                }
+
+                const data = await response.text();
+
+                const blob = new Blob([data], { type: 'text/html' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'downloaded_site.html';
+                link.click();
+            } catch (error) {
+                console.error('Error:', error);
+                alert("There was an error fetching the site. It may not allow cross-origin requests.");
+            }
         }
     </script>
 </body>
