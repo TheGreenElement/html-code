@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Javascript Runner</title>
+</head>
+<body>
+    <h1>Iframe JavaScript Runner</h1>
+    <iframe id="myIframe" style="width: 100%; height: 500px;" srcdoc="
+        <html>
+            <head>
+                <title>Iframe Content</title>
+            </head>
+            <body>
+                <h2>This is inside the iframe</h2>
+                <div id='result'></div>
+            </body>
+        </html>
+    "></iframe>
+
+    <button id="runJs">Run JavaScript</button>
+
+    <script>
+        document.getElementById('runJs').onclick = function() {
+            const iframe = document.getElementById('myIframe').contentWindow;
+            const code = prompt('Enter JavaScript code to run in the iframe:');
+            try {
+                iframe.eval(code);
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        };
+    </script>
+</body>
+</html>
