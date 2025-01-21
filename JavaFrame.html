@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IFrame with JavaScript Execution</title>
+    <style>
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .button-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function executeJavaScriptInIFrame(URL, script) {
+            var iframe = document.getElementById("myIFrame");
+            iframe.src = url;
+            var button = document.createElement("button");
+            button.innerText = "Run JavaScript";
+            button.addEventListener("click", function() {
+                var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+                iframeWin.eval(script);
+            });
+            document.body.appendChild(button);
+        }
+    </script>
+</head>
+<body>
+    <div class="button-container">
+        <button onclick="executeJavaScriptInIFrame('securly.com', 'javascript:(function()%7B(function()%20%7Bvar%20x%20%3D%20document.createElement(%22script%22)%3Bx.src%20%3D%20%22https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2FSnowLord7%2Fdevconsole%40master%2Fmain.js%22%3Bx.onload%20%3D%20alert(%22Loaded%20Developer%20Console!%22)%3Bdocument.head.appendChild(x)%3B%7D)()%7D)()')">Run JavaScript</button>
+    </div>
+    <iframe id="myIFrame" src="about:blank"></iframe>
+</body>
+</html>
