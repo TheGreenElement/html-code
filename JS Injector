@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Injector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inject JavaScript Code</h1>
+    <textarea id="jsCode" rows="10" cols="50" placeholder="Enter your JavaScript code here..."></textarea><br><br>
+    <button id="injectButton">Inject JavaScript</button>
+
+    <script>
+        document.getElementById('injectButton').addEventListener('click', function() {
+            var code = document.getElementById('jsCode').value;
+            
+            if (code.trim() !== "") {
+                try {
+                    // This will inject the custom JS code into the page
+                    eval(code);
+                    alert("JavaScript injected successfully!");
+                } catch (e) {
+                    alert("Error in the JavaScript code: " + e.message);
+                }
+            } else {
+                alert("Please enter valid JavaScript code!");
+            }
+        });
+    </script>
+</body>
+</html>
