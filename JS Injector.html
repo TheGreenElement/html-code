@@ -27,12 +27,32 @@
             var code = document.getElementById('jsCode').value;
             
             if (code.trim() !== "") {
-                try {
-                    // This will inject the custom JS code into the page
-                    eval(code);
-                    alert("JavaScript injected successfully!");
-                } catch (e) {
-                    alert("Error in the JavaScript code: " + e.message);
+                // Prompt user for the URL of the website to inject JS into
+                var url = prompt("Enter the URL of the website to inject JavaScript into:");
+
+                if (url) {
+                    // Validate the URL format
+                    var urlPattern = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
+                    if (urlPattern.test(url)) {
+                        try {
+                            // Open the specified URL in a new tab
+                            var newWindow = window.open(url, "_blank");
+
+                            // Ensure the new window has fully loaded before injecting the code
+                            newWindow.onload = function() {
+                                // Inject the JavaScript code into the new window
+                                newWindow.eval(code);
+                                alert("JavaScript injected successfully into " + url + "!");
+                            };
+
+                        } catch (e) {
+                            alert("Error in injecting JavaScript: " + e.message);
+                        }
+                    } else {
+                        alert("Invalid URL. Please enter a valid URL starting with http:// or https://");
+                    }
+                } else {
+                    alert("URL cannot be empty!");
                 }
             } else {
                 alert("Please enter valid JavaScript code!");
